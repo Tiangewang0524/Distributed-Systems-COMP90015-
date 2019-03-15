@@ -1,0 +1,57 @@
+1a)
+
+For:
+- The simulation can be accessed remotely.
+- Multiple users can access the same simulation at the same time.
+- The GUI can be recompiled without having to stop the simulation.
+
+Against:
+- Bandwidth between GUI and simulation can be a limiting factor.
+- Application becomes more complicated to build.
+
+1b)
+
+Eventual consistency in a distributed systems means that, assuming there are no changes to data/state, the state of the system is eventually seen as the same no matter from where data is accessed. For example, a change to some data in a distributed database may take some time to propogate to all nodes. Before it has done so, some reads at some nodes may be inconsistent. But evetually the system will become consistent. It is good for providing large scale systems because it tolerates latency and faults. However some applications may require absolute consistency such as banking applications. Eventual consistency as well needs further definition as to what kinds of inconsistent states that nodes can "see".
+
+2a) Client/server has many clients processes connecting to a single server process. The clients never connect to each other. It is a simple design and easy to understand/implement. However the server can easily become a bottleneck to scalability.
+
+2b) Peer-to-Peer allows all peer processes to connect to each other. The failure of any given peer is no worse than other peer. Peer-to-Peer provides scalability but it leads to IP addresses being revealed which is a security concern.
+
+2c) Multi-server is like Client/server however there are multi-servers to which a client may connect. The multi-servers typically communicate with each other or with a data storage tier. Multi-server provides for greater scalability than Client/server but it adds latency to the client requests, since multiple servers may need to be involved with a single request. It also is more complex than Client/server.
+
+2d) A Proxy server architecture has a proxy process, which typically sits between a client and a server. The client's requests to the server are instead sent to the proxy and the proxy forwards them on the server. Responses from the server go to the proxy which forwards them back to the client. The proxy is typically transparent to the client/server protocol. It is good for providing monitoring of client/server requests (e.g. to obtain statistics) but it adds more latency and may become a bottleneck.
+
+2e) A thin client architecture runs the entire application on the server and uses the client only for user I/O and control. The client does not install any applications. This makes managing the client easy but it means more network bandwidth and latency requirements which may cause some applications to be ineffective (such as video editing).
+
+3) The connection time interval served the purposes of trying to prevent a single client (more specifically a single IP address) being able to flood the server with spurious requests, e.g. creating huge numbers of files and exhausting memory. It does have the draw back that legitimate requests may be throttled, including requests from other servers that are query relays. The same functionality could be pushed to the network layer, e.g. handled at the router, and this be more effective at preventing the server from becomming overloaded.
+
+4a) The client can use a socket timeout that will timeout with an exception if there is no activity on the socket. This allows the client to decide if it wants to connect again (try again) or not. The challenge is doing this transparently and with performance in mind. Eventually the timeout condition and retries may fail and need to be reported to the user. As well there is the question of how long should be given before timeout: too short and maybe the timeout will be premature while too long and time will be wasted (the user is waiting).
+
+4b) A remote procedure call (RPC) allows one process to call a procedure in another process, giving it some arguments and obtaining the returned value. RPC is typically access transparent. An RPC like Sun RPC requires the programmer to define the interface of the remote procedures using a interface definition language. Compiling the idl gives rise to definitions that the server must implement and that the client uses to access the remote procedures. The client process creates a connection to the server process and then it can call the remote procedure stub processes using the connection. The arguments are marshalled, transmitted, unmarshalled, executed, the return argument is marshalled, transmitted and unmarshalled and returned to the calling procedure.
+
+5a) A message queue paradigm consists of a queue: senders put messages on the queue and receivers take messages from the head of the queue. Once the message has been taken from the queue by a receiver, it is not available to other receivers. On the other hand, publish/subscribe has a log of messages (events), whereby all receivers (subscribers) for a given topic (queue) will receive every event that is published to that topic. Publish/subscribe systems may keep a past log for some time, while message queue systems do not keep messages that have been taken from the queue. The message queue paradigm is most appropriate when communication is specifically one-to-one or one-to-many where each message must be consumed by exactly one receiver, e.g. a job distribution system that distributes jobs to workers. Having said this, some publish/subscribe implementations provide paritioning that also achieves this.
+
+5b) An overlay network is a network of application processes that run on the network edge, whereby communication takes place between the application processes typically using some kind of routing protocol or lookup protocol. An overlay network can allow the application to optimize its communication at large scale, e.g. in a peer-to-peer fashion, in applications like video streaming where a broadcast tree is useful. Internet-wide video on demand is example application where an overlay network can be effective.
+
+5a) Cipher block chaining is to avoid subsequent, identical unencrypted blocks from having identical encrypted blocks in the transmission, which would otherwise allow an attack to know that the same information is being transmitted in the stream at different points. A technique that achieves cypher block chaining is to XOR a block with a previously encrypted block, prior to encyption. This will ensure that all blocks look different on the stream regardless. The technique can be undone by similar XORing at the receiver.
+
+5b) 
+
+- All networks are untrusted/unsecure. The network is always to be considered vulnerable to attacks such as undertaking eavsedropping and replaying messages.
+- The source code is always known by the attacker. The developer cannot rely on the attacker not knowing how the code works.
+- The attacker has very large resources. The attacker should be assumed to have access to supercomputing power. This means that simple security algorithms must be avoided.
+
+5c) A digital certificate is a binding between a public key and an the public key's owner identity, signed by a certificate authority that issues the certificate. A digital signature is the basis of a digital certificate. It takes a hash of the combination of public key and identity and then this is encrypted by the certificate authority's private key. The signature can be verified by anyone with the certificate authoritity's public key. To verify the certificate authoritity's public key requires a digital certificate from another authority (certificate chain) or a self-signed certificate (root of the chain).
+
+6a) Process migration takes a process that is running on one computer, freezes it, copies it (its address space) to another computer and restarts it. It is complicated because the machines must have identical architectures and because the process may have open resources such as open files that must be handled properly for the migration to work.
+
+6b) A static location policy does not take into account information about the resources when making a decision while a dynamic location policy does. An example static policy is random (or even round-robin) while a dynamic policy is least-loaded node.
+
+6c) Sender-initiated is where the sender generates more work and pushes the work to a receiver. Whereas receiver-initiated is where an idle receiver asks for work from a sender. Sender-initiated is more efficient when the overall load on the system is low.
+
+7a) The UFID includes the IP address and timestamp of creation to ensure it is different accross servers.
+7b) Because the interface is striving to be idemponent and the open command suggests that state is maintained by the file server, which would end up not being idepempotent.
+7c) Create() is not idempotent because multiple requests will lead to multiple UFIDs being created, although this is likely not a problem.
+
+
+ 
